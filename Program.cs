@@ -74,12 +74,14 @@ namespace vstupniukol
                 Point finalPoint = new Point();
 
                 //metoda pro projití všech možností protnutí tras, díky uzavření do metody se pomocí return dostanu pryč z kodu po nalezení bodu
-                Loops();
-                void Loops()
+                LookForCrossSection();
+                void LookForCrossSection()
                 {
-                    //
+                    //deklarování proměnných úseků
                     PathSection sectionOne;
                     PathSection sectionTwo;
+                    //kolmé úseky
+                    //dva cykly, ketré projdou všechny kombinace kolmých úseků a pokud najdou průnik ukončí hledání
                     for (int i = 0; i < pathOne.Verticals.Length; i++)
                     {
                         sectionOne = pathOne.Verticals[i];
@@ -112,28 +114,9 @@ namespace vstupniukol
                         }
                     }
 
-
-                    // metoda pro srovnání krajních úseků
-                    bool TryFindParallel()
-                    {
-                        if (CompareParallel(sectionOne, sectionTwo)) //pozná pokud jsou na stejné přímce a prolínají se
-                        {
-                            if (sectionOne.Lower > sectionTwo.Lower) //hledá ten správný bod
-                            {
-                                finalPoint = new Point(sectionOne.Position, sectionOne.Lower);
-                                pointFound = true;
-                            }
-                            else
-                            {
-                                finalPoint = new Point(sectionOne.Position, sectionTwo.Lower);
-                                pointFound = true;
-                            }
-                            return true;
-                        }
-                        return false;
-                    }
+                    //krajní úseky
                     //horizontální
-                    if (!(pathOne.Horizontals.Length == 0 || pathTwo.Horizontals.Length == 0))
+                    if (!(pathOne.Horizontals.Length == 0 || pathTwo.Horizontals.Length == 0)) //kontrola prázdnosti polí
                     {
                         sectionOne = pathOne.Horizontals[0];
                         sectionTwo = pathTwo.Horizontals[0];
@@ -171,6 +154,26 @@ namespace vstupniukol
                         if (TryFindParallel()) return;
 
                     }
+                    // metoda pro srovnání krajních úseků
+                    bool TryFindParallel()
+                    {
+                        if (CompareParallel(sectionOne, sectionTwo)) //pozná pokud jsou na stejné přímce a prolínají se
+                        {
+                            if (sectionOne.Lower > sectionTwo.Lower) //hledá ten správný bod
+                            {
+                                finalPoint = new Point(sectionOne.Position, sectionOne.Lower);
+                                pointFound = true;
+                            }
+                            else
+                            {
+                                finalPoint = new Point(sectionOne.Position, sectionTwo.Lower);
+                                pointFound = true;
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
+
 
                 }
                 if (pointFound)
@@ -203,6 +206,8 @@ namespace vstupniukol
 
         }
 
+
+        // logika pro srovnání úseků
         private static bool CompareParallel(PathSection sectionOne, PathSection sectionTwo)
         {
             return sectionOne.Position == sectionTwo.Position && sectionOne.Lower < sectionTwo.Higher && sectionOne.Higher > sectionTwo.Lower;  
@@ -217,7 +222,7 @@ namespace vstupniukol
     }
     public static class Extensions
     {
-        //metoda pro převod textového vstupu na rohové body trasy mezi kraji intervalu
+        //metoda pro převod textového vstupu na rohové body trasy mezi kraji intervalu (nepoužito)
         public static Point[] TranslateStringPathToPointsInRange(this string path, int lowerBound, int upperBound)
         {
             //rozdělí string na jednotlivé kroky
@@ -355,6 +360,8 @@ namespace vstupniukol
             return points.ToArray();
         }
 
+        //převod textu na pole úseků (menší prostor, lépe přístupné při porovnávání),
+        //pro úseky je definován typ PathSection a jsou zabaleny do proměnné TranslatedPath obsahující 2 pole horizontálních a vertikálních úseků
         public static TranslatedPath TranslateStringPathToPathSections(this string path, int lowerBound, int upperBound)
         {
             TranslatedPath allElements = new TranslatedPath();
@@ -413,7 +420,7 @@ namespace vstupniukol
             List<PathSection> sectionsHor = new List<PathSection>();
             List<PathSection> sectionsVer = new List<PathSection>();
             //pokud se vstoupí do intervalu, uloží se místo vstupu a přeruší se cylkus 
-            //uložení vstupního bodu
+            //uložení hraničního úseku (od prvního bodu, který se počítá
             Point lowerboundPoint = position;
             switch (lastChar)
             {
@@ -474,7 +481,7 @@ namespace vstupniukol
                 i++;
             }
 
-            //uložení hraničního bodu
+            //uložení hraničního úseku
             switch (lastChar)
             {
                 case 'E':

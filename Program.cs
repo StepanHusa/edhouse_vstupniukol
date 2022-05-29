@@ -93,7 +93,7 @@ namespace vstupniukol
                             {
                                 finalPoint = new Point(sectionTwo.Position, sectionOne.Position);
                                 pointFound = true;
-                                return;
+                                //return;
                             }
                         }
                     }
@@ -108,7 +108,7 @@ namespace vstupniukol
                             {
                                 finalPoint = new Point(sectionOne.Position, sectionTwo.Position);
                                 pointFound = true;
-                                return;
+                                //return;
 
                             }
                         }
@@ -159,7 +159,7 @@ namespace vstupniukol
                     {
                         if (CompareParallel(sectionOne, sectionTwo)) //pozná pokud jsou na stejné přímce a prolínají se
                         {
-                            if (sectionOne.Lower > sectionTwo.Lower) //hledá ten správný bod
+                            if (sectionOne.Lower > sectionTwo.Lower) //vybere ten správný bod (teo
                             {
                                 finalPoint = new Point(sectionOne.Position, sectionOne.Lower);
                                 pointFound = true;
@@ -192,6 +192,8 @@ namespace vstupniukol
                 ExitProgram();
             }
 
+            
+
             ExitProgram();
         }
 
@@ -210,7 +212,7 @@ namespace vstupniukol
         // logika pro srovnání úseků
         private static bool CompareParallel(PathSection sectionOne, PathSection sectionTwo)
         {
-            return sectionOne.Position == sectionTwo.Position && sectionOne.Lower < sectionTwo.Higher && sectionOne.Higher > sectionTwo.Lower;  
+            return sectionOne.Position == sectionTwo.Position && sectionOne.Lower <= sectionTwo.Higher && sectionOne.Higher >= sectionTwo.Lower;  
         }
         private static bool ComparePerpendicular(PathSection sectionOne, PathSection sectionTwo)
         {
@@ -364,6 +366,7 @@ namespace vstupniukol
         //pro úseky je definován typ PathSection a jsou zabaleny do proměnné TranslatedPath obsahující 2 pole horizontálních a vertikálních úseků
         public static TranslatedPath TranslateStringPathToPathSections(this string path, int lowerBound, int upperBound)
         {
+
             TranslatedPath allElements = new TranslatedPath();
             //rozdělí string na jednotlivé kroky
             string[] moves = path.Split(',');
@@ -420,8 +423,8 @@ namespace vstupniukol
             List<PathSection> sectionsHor = new List<PathSection>();
             List<PathSection> sectionsVer = new List<PathSection>();
             //pokud se vstoupí do intervalu, uloží se místo vstupu a přeruší se cylkus 
-            //uložení hraničního úseku (od prvního bodu, který se počítá
-            Point lowerboundPoint = position;
+            //uložení hraničního úseku (od prvního bodu, který se počítá)
+            //Point lowerboundPoint = position;
             switch (lastChar)
             {
                 case 'E':
@@ -442,7 +445,7 @@ namespace vstupniukol
                     //lowerboundPoint.Offset(0, distance - lowerBound);
                     break;
                 default:
-                    Console.WriteLine($"Varování: při převodu kroků na vektory nebyl u kroku {i} upřesněn směr");
+                    //Console.WriteLine($"Varování: při převodu kroků na vektory nebyl u kroku {i} upřesněn směr");
                     break;
             }
 
@@ -466,17 +469,31 @@ namespace vstupniukol
                         position.Y += number;
                         break;
                     case 'W':
-                        sectionsHor.Add(new PathSection(position.X + number, position.X , position.Y));
+                        sectionsHor.Add(new PathSection(position.X - number, position.X , position.Y));
                         position.X -= number;
                         break;
                     case 'S':
-                        sectionsVer.Add(new PathSection(position.Y + number, position.Y, position.X));
+                        sectionsVer.Add(new PathSection(position.Y - number, position.Y, position.X));
                         position.Y -= number;
                         break;
                     default:
                         Console.WriteLine($"Varování: při převodu kroků na vektory nebyl u kroku {i} upřesněn směr");
                         break;
                 }
+                //kod použitý pro kontrolu výsledku
+                //try
+                //{
+                //    var v = sectionsVer[sectionsVer.Count - 1];
+                //    Point p = new Point(4649, 6047);
+
+                //    if (p.X == v.Position && p.Y < v.Higher && p.Y > v.Lower)
+                //        v = new PathSection();
+                //    var hor = sectionsHor[sectionsHor.Count - 1];
+
+                //    if (p.Y == v.Position && p.X < v.Higher && p.X > v.Lower)
+                //        v = new PathSection();
+                //}
+                //catch { }
 
                 i++;
             }

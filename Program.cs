@@ -89,11 +89,12 @@ namespace vstupniukol
                         {
                             sectionTwo = pathTwo.Horizontals[j];
 
-                            if (ComparePerpendicular(sectionOne,sectionTwo))
+                            if (ComparePerpendicular(sectionOne, sectionTwo))
                             {
                                 finalPoint = new Point(sectionTwo.Position, sectionOne.Position);
+
                                 pointFound = true;
-                                //return;
+                                return;
                             }
                         }
                     }
@@ -108,7 +109,7 @@ namespace vstupniukol
                             {
                                 finalPoint = new Point(sectionOne.Position, sectionTwo.Position);
                                 pointFound = true;
-                                //return;
+                                return;
 
                             }
                         }
@@ -159,7 +160,7 @@ namespace vstupniukol
                     {
                         if (CompareParallel(sectionOne, sectionTwo)) //pozná pokud jsou na stejné přímce a prolínají se
                         {
-                            if (sectionOne.Lower > sectionTwo.Lower) //vybere ten správný bod (teo
+                            if (sectionOne.Lower > sectionTwo.Lower) //vybere ten správný bod
                             {
                                 finalPoint = new Point(sectionOne.Position, sectionOne.Lower);
                                 pointFound = true;
@@ -176,13 +177,14 @@ namespace vstupniukol
 
 
                 }
+                Console.WriteLine();
                 if (pointFound)
                 {
-                    Console.WriteLine($"BOD NALEZEN: {finalPoint.X}, {finalPoint.Y}");
+                    Console.WriteLine($"HLEDANÝ BOD: {finalPoint.X}, {finalPoint.Y}");
                 }
                 else
                 {
-                    Console.WriteLine("BOD NENALEZEN");
+                    Console.WriteLine("HLEDANÝ BOD NENALEZEN (trasy se v daném intervalu neprotínají)");
                 }
 
             }
@@ -450,12 +452,13 @@ namespace vstupniukol
             }
 
             //cyklus pro hodnoty v intervalu
-            while (distance < upperBound && i < moves.Length) //TODO pohlídat vyjímku, kdy horní hranice je větší než celková vzdálenost
+            while (distance < upperBound && i < moves.Length) //TODOdone pohlídat vyjímku, kdy horní hranice je větší než celková vzdálenost
             {
                 lastChar = moves[i][moves[i].Length - 1];
                 number = int.Parse(moves[i].Remove(moves[i].Length - 1));
 
                 distance += number;
+                
 
                 //uloží úsek do správného seznamu a posune pozici
                 switch (lastChar)
